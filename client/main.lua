@@ -226,3 +226,27 @@ RegisterNUICallback('removeCharacter', function(data, cb)
     TriggerEvent('qb-multicharacter:client:chooseChar')
     cb("ok")
 end)
+
+RegisterNUICallback('spawnLastLocation', function(data, cb)
+    DoScreenFadeOut(10)
+    local cData = data.cData
+    SetEntityAsMissionEntity(charPed, true, true)
+    DeleteEntity(charPed)
+    TriggerServerEvent('qb-multicharacter:server:spawnLastLocation', cData)
+
+    SetNuiFocus(false, false)
+    skyCam(false)
+
+    cb("ok")
+end)
+
+RegisterNetEvent('qb-multicharacter:client:spawnLastLocation', function(coords)
+    local ped = PlayerPedId()
+    SetEntityCoords(ped, coords.x, coords.y, coords.z)
+    SetEntityHeading(ped, coords.w)
+    FreezeEntityPosition(ped, false)
+    SetEntityVisible(ped, true)
+    TriggerServerEvent('QBCore:Server:OnPlayerLoaded')
+    TriggerEvent('QBCore:Client:OnPlayerLoaded')
+    DoScreenFadeIn(250)
+end)

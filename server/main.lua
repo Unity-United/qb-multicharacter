@@ -202,3 +202,17 @@ QBCore.Commands.Add("deletechar", Lang:t("commands.deletechar_description"), {{n
         TriggerClientEvent("QBCore:Notify", source, Lang:t("notifications.forgot_citizenid"), "error")
     end
 end, "god")
+
+RegisterNetEvent('qb-multicharacter:server:spawnLastLocation', function(cData)
+    local src = source
+    if QBCore.Player.Login(src, cData.citizenid) then
+        repeat
+            Wait(10)
+        until hasDonePreloading[src]
+        print('^2[qb-core]^7 '..GetPlayerName(src)..' (Citizen ID: '..cData.citizenid..') has succesfully loaded!')
+        QBCore.Commands.Refresh(src)
+        loadHouseData(src)
+        local coords = json.decode(cData.position)
+        TriggerClientEvent('qb-multicharacter:client:spawnLastLocation', src, coords)
+    end
+end)
